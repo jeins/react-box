@@ -1,0 +1,1 @@
+a:1:{i:0;a:10:{s:10:"ewd_tenant";s:4:"test";s:11:"REMOTE_USER";s:4:"test";s:10:"USERDOMAIN";s:4:"test";s:22:"Shib-Identity-Provider";s:4:"test";s:13:"ewd_firstname";s:4:"test";s:12:"ewd_lastname";s:4:"test";s:9:"ewd_email";s:4:"test";s:9:"ewd_phone";s:4:"test";s:10:"ewd_mobile";s:4:"test";s:10:"ewd_number";s:4:"test";}}
