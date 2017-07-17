@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {observer, inject} from 'mobx-react';
-import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
+import Toggle from 'material-ui/Toggle';
 import {
     Table,
     TableBody,
@@ -9,55 +10,57 @@ import {
     TableRow,
     TableRowColumn,
 } from 'material-ui/Table';
-import User from '../api/User';
 
-@inject("User")
+@inject('user')
 @observer
 export default class UserList extends Component {
-    constructor(props) {
-        super(props);
-        this.user = this.props.User;
-        this.user.getData();
-        console.log(this.user.data);
+
+    componentWillMount(){
+        this.props.user.getData();
     }
 
+    _changeUserStatus = (e) =>{
+        let userStatus = this.props.user.data[e.target.id];
+        this.props.user.data[e.target.id].status = !userStatus;
+    };
+
     render() {
+        const data = this.props.user.data;
+
         return (
             <div>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderColumn>ID</TableHeaderColumn>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
+                <h1>{data.length}</h1>
+                <Table fixedHeader={true}>
+                    <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                        <TableRow style={{textAlign: 'center'}} colSpan="3">
+                            <TableHeaderColumn>Number</TableHeaderColumn>
+                            <TableHeaderColumn>Tenant</TableHeaderColumn>
+                            <TableHeaderColumn>Firstname</TableHeaderColumn>
+                            <TableHeaderColumn>Lastname</TableHeaderColumn>
                             <TableHeaderColumn>Status</TableHeaderColumn>
+                            <TableHeaderColumn></TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
-                        <TableRow>
-                            <TableRowColumn>1</TableRowColumn>
-                            <TableRowColumn>John Smith</TableRowColumn>
-                            <TableRowColumn>Employed</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>2</TableRowColumn>
-                            <TableRowColumn>Randal White</TableRowColumn>
-                            <TableRowColumn>Unemployed</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>3</TableRowColumn>
-                            <TableRowColumn>Stephanie Sanders</TableRowColumn>
-                            <TableRowColumn>Employed</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>4</TableRowColumn>
-                            <TableRowColumn>Steve Brown</TableRowColumn>
-                            <TableRowColumn>Employed</TableRowColumn>
-                        </TableRow>
-                        <TableRow>
-                            <TableRowColumn>5</TableRowColumn>
-                            <TableRowColumn>Christopher Nolan</TableRowColumn>
-                            <TableRowColumn>Unemployed</TableRowColumn>
-                        </TableRow>
+                    <TableBody displayRowCheckbox={false}>
+                        {data.map((user, index)=>(
+                            <TableRow key={index}>
+                                <TableRowColumn>{user.ewd_number}</TableRowColumn>
+                                <TableRowColumn>{user.ewd_tenant}</TableRowColumn>
+                                <TableRowColumn>{user.ewd_firstname}</TableRowColumn>
+                                <TableRowColumn>{user.ewd_lastname}</TableRowColumn>
+                                <TableRowColumn>
+                                    <Toggle
+                                        id={index}
+                                        onToggle={this._changeUserStatus}
+                                        defaultToggled={user.status}
+                                    />
+                                </TableRowColumn>
+                                <TableRowColumn>
+                                    <IconButton iconClassName="material-icons" tooltip="View" tooltipPosition="top-right">pageview</IconButton>
+                                    <IconButton iconClassName="material-icons" tooltip="Delete" tooltipPosition="top-right">delete</IconButton>
+                                </TableRowColumn>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </div>
