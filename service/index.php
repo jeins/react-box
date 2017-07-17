@@ -1,10 +1,10 @@
 <?php
-
+header("Access-Control-Allow-Origin: *");
 function getData()
 {
     $data = unserialize(file_get_contents(__DIR__ . '/sso-mock.php')) ?: [];
 
-    return json_encode($data[0]);
+    return json_encode($data);
 }
 
 function saveData($data)
@@ -24,11 +24,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 //            'ewd_email' => 'test',
 //            'ewd_phone' => 'test',
 //            'ewd_mobile' => 'test',
-//            'ewd_number' => 'test'
+//            'ewd_number' => 'test',
+//            'status' => false
+//        ],[
+//            'ewd_tenant' => 'test2',
+//            'REMOTE_USER' => 'test2',
+//            'USERDOMAIN' => 'test2',
+//            'Shib-Identity-Provider' => 'test2',
+//            'ewd_firstname' => 'test2',
+//            'ewd_lastname' => 'test2',
+//            'ewd_email' => 'test2',
+//            'ewd_phone' => 'test2',
+//            'ewd_mobile' => 'test2',
+//            'ewd_number' => 'test2',
+//            'status' => true
 //        ]
 //    ];
-
-    echo json_encode(getData());
+//    saveData($arr);
+    echo getData();
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }

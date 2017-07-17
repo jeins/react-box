@@ -8,6 +8,11 @@ var config = {
         path: SRC_DIR,
         filename: 'app.min.js'
     },
+    devServer: {
+        headers: {
+            'Access-Control-Allow-Origin': '*'
+        }
+    },
     module: {
         loaders: [
             {
