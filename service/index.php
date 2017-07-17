@@ -1,5 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description');
+
 function getData()
 {
     $data = unserialize(file_get_contents(__DIR__ . '/sso-mock.php')) ?: [];
@@ -43,5 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 //    saveData($arr);
     echo getData();
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+    $data = json_decode(file_get_contents('php://input'), true);
+    saveData($data);
 }
