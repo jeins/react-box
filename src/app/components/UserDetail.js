@@ -53,14 +53,17 @@ class UserDetail extends Component{
         return (
             <Paper style={styles.div} zDepth={3}>
                 {
-                    Object.keys(this.user).map((key, index) => (
-                        <TextField
-                            key={index}
-                            style={styles.inputFirst}
-                            floatingLabelText={key}
-                            name={key} value={this.user[key]}
-                            onChange={this.handleChange} />
-                    ))
+                    Object.keys(this.user).map((key, index) => {
+                        return (
+                            <TextField
+                                key={index}
+                                style={styles.inputFirst}
+                                floatingLabelText={key}
+                                name={key} value={this.user[key]}
+                                disabled={key === 'isActive'}
+                                onChange={this.handleChange} />
+                        )
+                    })
                 }
                 <div>
                     <RaisedButton label="Save"

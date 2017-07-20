@@ -54,7 +54,7 @@ export default class UserList extends Component {
 
     _changeUserStatus = (e) =>{
         let userStatus = this.user.userList[e.target.id];
-        this.user.userList[e.target.id].status = (!(userStatus.status === 'true')).toString();
+        this.user.userList[e.target.id].isActive = (!(userStatus.status === 'true')).toString();
         this.user.save();
     };
 
@@ -91,7 +91,7 @@ export default class UserList extends Component {
                                             <Toggle
                                                 id={index}
                                                 onToggle={this._changeUserStatus}
-                                                defaultToggled={user.status === 'true'}
+                                                defaultToggled={user.isActive === 'true'}
                                             />
                                         </TableRowColumn>
                                         <TableRowColumn style={{overflow: 'visible'}}>
