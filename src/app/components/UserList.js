@@ -5,7 +5,7 @@ import Toggle from 'material-ui/Toggle';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
-import {GridList, GridTile} from 'material-ui/GridList';
+import {GridList} from 'material-ui/GridList';
 import {
     Table,
     TableBody,
@@ -21,8 +21,7 @@ const styles = {
         flexDirection: 'row wrap',
         padding: 20,
         width: '100%',
-        marginBottom: 30,
-        height: "500px"
+        marginBottom: 30
     },
     paperLeft:{
         flex: 1,
@@ -54,17 +53,12 @@ export default class UserList extends Component {
     }
 
     _changeUserStatus = (e) =>{
-        let userStatus = this.user.data[e.target.id];
-        this.user.data[e.target.id].status = !userStatus;
+        let userStatus = this.user.userList[e.target.id];
+        this.user.userList[e.target.id].status = (!(userStatus.status === 'true')).toString();
+        this.user.save();
     };
 
-    addNewData(){
-        this.user.cleanUpUserData();
-    }
-
     render() {
-        const {userList} = this.user;
-
         return (
             <div>
                 <GridList cols={2}>
@@ -87,8 +81,8 @@ export default class UserList extends Component {
                                 </TableRow>
                             </TableHeader>
                             <TableBody displayRowCheckbox={false}>
-                                {userList.map((user, index)=>(
-                                    <TableRow key={index} >
+                                {this.user.userList.map((user, index)=>(
+                                    <TableRow key={index}>
                                         <TableRowColumn>{user.ewd_number}</TableRowColumn>
                                         <TableRowColumn>{user.ewd_tenant}</TableRowColumn>
                                         <TableRowColumn>{user.ewd_firstname}</TableRowColumn>
@@ -97,7 +91,7 @@ export default class UserList extends Component {
                                             <Toggle
                                                 id={index}
                                                 onToggle={this._changeUserStatus}
-                                                defaultToggled={user.status}
+                                                defaultToggled={user.status === 'true'}
                                             />
                                         </TableRowColumn>
                                         <TableRowColumn style={{overflow: 'visible'}}>

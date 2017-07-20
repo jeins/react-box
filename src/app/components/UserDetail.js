@@ -26,27 +26,20 @@ class UserDetail extends Component{
         super(props);
 
         this.user = this.props.user.user;
+        this.disabledButton = true;
     }
 
     handleChange = (e) => {
         this.user[e.target.name] = e.target.value;
     };
 
-    disabledButton = () => {
-        let requiredFields = ['*'];
+    validateForm() {
         let isValid = true;
 
-        Object.key(this.user).map(key =>{
-            if(requiredFields.length === 1 && requiredFields[0] === '*'){
-                if(!this.user[key]){
-                    isValid = false;
-                }
-            } else{
-                requiredFields.map(reqField => {
-                    if(reqField === key && !this.user[key]){
-                        isValid = false;
-                    }
-                });
+        Object.keys(this.user).forEach(key =>{
+            if(!this.user[key]){
+                isValid = false;
+                return false;
             }
         });
 
@@ -55,16 +48,24 @@ class UserDetail extends Component{
 
     render(){
         this.user = this.props.user.user;
+        this.disabledButton = !this.validateForm();
 
         return (
             <Paper style={styles.div} zDepth={3}>
                 {
                     Object.keys(this.user).map((key, index) => (
-                        <TextField key={index} style={styles.inputFirst} floatingLabelText={key} name={key} value={this.user[key]} onChange={this.handleChange} />
+                        <TextField
+                            key={index}
+                            style={styles.inputFirst}
+                            floatingLabelText={key}
+                            name={key} value={this.user[key]}
+                            onChange={this.handleChange} />
                     ))
                 }
                 <div>
-                    <RaisedButton label="Save" style={{marginRight: 20, marginTop: 30}} onClick={()=>this.props.user.save()} />
+                    <RaisedButton label="Save"
+                                  style={{marginRight: 20, marginTop: 30}} fullWidth={true} primary={true}
+                                  disabled={this.disabledButton} onClick={()=>this.props.user.save()} />
                 </div>
             </Paper>
         )

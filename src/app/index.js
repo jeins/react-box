@@ -15,7 +15,7 @@ injectTapEventPlugin();
 
 const customTheme = getMuiTheme({
     palette: {
-        accent1Color: lightGreen600,
+        primary1Color: lightGreen600,
     },
 });
 

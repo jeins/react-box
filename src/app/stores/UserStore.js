@@ -52,7 +52,7 @@ class UserStore {
     @action
     async save(){
         try{
-            if(this.user){
+            if(!this.isUserSelected && this.isUserExist){
                 this.userList.push(this.user);
             }
 
@@ -75,6 +75,19 @@ class UserStore {
     @computed
     get isUserSelected(){
         return this.selectedIndex !== null;
+    }
+
+    @computed
+    get isUserExist(){
+        let isValid = true;
+        Object.keys(this.user).forEach(key =>{
+            if(!this.user[key]){
+                isValid = false;
+                return false;
+            }
+        });
+
+        return isValid;
     }
 }
 
