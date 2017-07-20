@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {observable, action, computed} from 'mobx';
+import {observable, action, computed, toJS} from 'mobx';
 
 class UserStore {
     @observable userList = [];
@@ -52,10 +52,11 @@ class UserStore {
     @action
     async save(){
         try{
-            if(!this.isUserSelected && this.isUserExist){
+            let isUserEmpty = Object.keys(toJS(this.user)).length === 0;
+            if(!this.isUserSelected && this.isUserExist && !isUserEmpty){
                 this.userList.push(this.user);
             }
-
+            
             await axios.post('http://localhost:1234', this.userList);
 
             this.cleanUp();
@@ -66,9 +67,8 @@ class UserStore {
 
     @action
     remove(id){
-        this.user = null;
+        this.user = {};
         this.userList.splice(id, 1);
-        console.log(this.userList);
         this.save();
     }
 

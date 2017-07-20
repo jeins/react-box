@@ -54,7 +54,7 @@ export default class UserList extends Component {
 
     _changeUserStatus = (e) =>{
         let userStatus = this.user.userList[e.target.id];
-        this.user.userList[e.target.id].isActive = (!(userStatus.status === 'true')).toString();
+        this.user.userList[e.target.id].isActive = (!(userStatus.isActive === 'true')).toString();
         this.user.save();
     };
 
