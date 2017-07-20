@@ -16,11 +16,12 @@ class UserStore {
         ewd_mobile: '',
         ewd_number: ''
     };
+    @observable apiUrl = 'http://localhost:1234';
 
     @action
     async getData() {
-        try{
-            let {data} = await axios.get('http://localhost:1234');
+        try {
+            let {data} = await axios.get(this.apiUrl);
             this.userList = data;
         } catch (err) {
             console.log(err);
@@ -28,13 +29,13 @@ class UserStore {
     }
 
     @action
-    viewUserData(index){
+    viewUserData(index) {
         this.selectedIndex = index;
         this.user = this.userList[index];
     }
 
     @action
-    cleanUp(){
+    cleanUp() {
         this.user = {
             ewd_tenant: '',
             REMOTE_USER: '',
@@ -47,47 +48,53 @@ class UserStore {
             ewd_mobile: '',
             ewd_number: ''
         };
+        this.selectedIndex = null;
     }
 
     @action
-    async save(){
-        try{
-            let isUserEmpty = Object.keys(toJS(this.user)).length === 0;
-            if(!this.isUserSelected && this.isUserExist && !isUserEmpty){
+    async save() {
+        try {
+            let component = '?mode=';
+            let userData = this.user;
+
+            if (!this.isUserSelected) {
                 this.userList.push(this.user);
             }
-            
-            await axios.post('http://localhost:1234', this.userList);
+
+            if (this.isUserSelected) {
+                component += "update&id=" + this.selectedIndex;
+                userData = this.userList[this.selectedIndex];
+            } else {
+                component += "add";
+            }
+
+            Object.keys(userData).forEach(key => {
+                component += '&' + key + '=' + userData[key];
+            });
+
+            await axios.get(this.apiUrl + component);
 
             this.cleanUp();
-        } catch (err){
-            console.log(err);
+        } catch (err) {
+            console.error(err);
         }
     }
 
     @action
-    remove(id){
-        this.user = {};
-        this.userList.splice(id, 1);
-        this.save();
+    async remove(id) {
+        try {
+            this.userList.splice(id, 1);
+            let component = '?mode=remove&id=' + id;
+            let {success} = await axios.get(this.apiUrl + component);
+            this.cleanUp();
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     @computed
-    get isUserSelected(){
+    get isUserSelected() {
         return this.selectedIndex !== null;
-    }
-
-    @computed
-    get isUserExist(){
-        let isValid = true;
-        Object.keys(this.user).forEach(key =>{
-            if(!this.user[key]){
-                isValid = false;
-                return false;
-            }
-        });
-
-        return isValid;
     }
 }
 

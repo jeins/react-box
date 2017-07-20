@@ -5,7 +5,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
 const styles = {
-    div:{
+    div: {
         flexDirection: 'row wrap',
         padding: 20,
         width: '100%',
@@ -20,9 +20,9 @@ const styles = {
 
 @inject('user')
 @observer
-class UserDetail extends Component{
+class UserDetail extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.user = this.props.user.user;
@@ -36,8 +36,8 @@ class UserDetail extends Component{
     validateForm() {
         let isValid = true;
 
-        Object.keys(this.user).forEach(key =>{
-            if(!this.user[key]){
+        Object.keys(this.user).forEach(key => {
+            if (key !== 'isActive' && !this.user[key]) {
                 isValid = false;
                 return false;
             }
@@ -46,7 +46,7 @@ class UserDetail extends Component{
         return isValid;
     };
 
-    render(){
+    render() {
         this.user = this.props.user.user;
         this.disabledButton = !this.validateForm();
 
@@ -61,14 +61,14 @@ class UserDetail extends Component{
                                 floatingLabelText={key}
                                 name={key} value={this.user[key]}
                                 disabled={key === 'isActive'}
-                                onChange={this.handleChange} />
+                                onChange={this.handleChange}/>
                         )
                     })
                 }
                 <div>
                     <RaisedButton label="Save"
                                   style={{marginRight: 20, marginTop: 30}} fullWidth={true} primary={true}
-                                  disabled={this.disabledButton} onClick={()=>this.props.user.save()} />
+                                  disabled={this.disabledButton} onClick={() => this.props.user.save()}/>
                 </div>
             </Paper>
         )

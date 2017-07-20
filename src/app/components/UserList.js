@@ -17,20 +17,20 @@ import {
 import UserDetail from './UserDetail';
 
 const styles = {
-    div:{
+    div: {
         flexDirection: 'row wrap',
         padding: 20,
         width: '100%',
         marginBottom: 30
     },
-    paperLeft:{
+    paperLeft: {
         flex: 1,
         height: '100%',
         margin: 10,
         textAlign: 'center',
         padding: 10
     },
-    paperRight:{
+    paperRight: {
         height: 600,
         flex: 4,
         margin: 10,
@@ -42,19 +42,21 @@ const styles = {
 @observer
 export default class UserList extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.user = this.props.user;
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.props.user.getData();
     }
 
-    _changeUserStatus = (e) =>{
-        let userStatus = this.user.userList[e.target.id];
-        this.user.userList[e.target.id].isActive = (!(userStatus.isActive === 'true')).toString();
+    _changeUserStatus = (e) => {
+        let id = e.target.id;
+        let userStatus = this.user.userList[id];
+        this.user.userList[id].isActive = (!(userStatus.isActive === 'true')).toString();
+        this.user.selectedIndex = id;
         this.user.save();
     };
 
@@ -66,7 +68,7 @@ export default class UserList extends Component {
                         <RaisedButton
                             label="Add New Data"
                             icon={<FontIcon className="material-icons">add</FontIcon>}
-                            onClick={()=>this.user.cleanUp()}
+                            onClick={() => this.user.cleanUp()}
                         />
 
                         <Table fixedHeader={true}>
@@ -81,7 +83,7 @@ export default class UserList extends Component {
                                 </TableRow>
                             </TableHeader>
                             <TableBody displayRowCheckbox={false}>
-                                {this.user.userList.map((user, index)=>(
+                                {this.user.userList.map((user, index) => (
                                     <TableRow key={index}>
                                         <TableRowColumn>{user.ewd_number}</TableRowColumn>
                                         <TableRowColumn>{user.ewd_tenant}</TableRowColumn>
@@ -95,8 +97,12 @@ export default class UserList extends Component {
                                             />
                                         </TableRowColumn>
                                         <TableRowColumn style={{overflow: 'visible'}}>
-                                            <IconButton iconClassName="material-icons" tooltip="View" tooltipPosition="top-right" onClick={()=>this.user.viewUserData(index)}>pageview</IconButton>
-                                            <IconButton iconClassName="material-icons" tooltip="Delete" tooltipPosition="top-right" onClick={()=>this.user.remove(index)}>delete</IconButton>
+                                            <IconButton iconClassName="material-icons" tooltip="View"
+                                                        tooltipPosition="top-right"
+                                                        onClick={() => this.user.viewUserData(index)}>pageview</IconButton>
+                                            <IconButton iconClassName="material-icons" tooltip="Delete"
+                                                        tooltipPosition="top-right"
+                                                        onClick={() => this.user.remove(index)}>delete</IconButton>
                                         </TableRowColumn>
                                     </TableRow>
                                 ))}
@@ -104,7 +110,7 @@ export default class UserList extends Component {
                         </Table>
                     </Paper>
 
-                    <UserDetail />
+                    <UserDetail/>
                 </GridList>
             </div>
         )

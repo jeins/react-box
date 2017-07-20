@@ -7,7 +7,7 @@ function getData()
 {
     $data = unserialize(file_get_contents(__DIR__ . '/sso-mock.php')) ?: [];
 
-    return json_encode($data);
+    return $data;
 }
 
 function saveData($data)
@@ -16,36 +16,57 @@ function saveData($data)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-//    $arr = [
-//        [
-//            'ewd_tenant' => 'test',
-//            'REMOTE_USER' => 'test',
-//            'USERDOMAIN' => 'test',
-//            'Shib-Identity-Provider' => 'test',
-//            'ewd_firstname' => 'test',
-//            'ewd_lastname' => 'test',
-//            'ewd_email' => 'test',
-//            'ewd_phone' => 'test',
-//            'ewd_mobile' => 'test',
-//            'ewd_number' => 'test',
-//            'status' => false
-//        ],[
-//            'ewd_tenant' => 'test2',
-//            'REMOTE_USER' => 'test2',
-//            'USERDOMAIN' => 'test2',
-//            'Shib-Identity-Provider' => 'test2',
-//            'ewd_firstname' => 'test2',
-//            'ewd_lastname' => 'test2',
-//            'ewd_email' => 'test2',
-//            'ewd_phone' => 'test2',
-//            'ewd_mobile' => 'test2',
-//            'ewd_number' => 'test2',
-//            'status' => true
-//        ]
-//    ];
-//    saveData($arr);
-    echo getData();
-} else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    saveData($data);
+    $dataList = getData();
+
+    if (isset($_GET['mode'])) {
+        $mode = $_GET['mode'];
+
+        if ($mode === 'remove') {
+            $id = $_GET['id'];
+
+            array_splice($dataList, $id, 1);
+        }
+        else {
+            $dataKey = [
+                'ewd_tenant', 'REMOTE_USER', 'USERDOMAIN', 'Shib_Identity_Provider', 'ewd_firstname', 'ewd_lastname', 'ewd_email',
+                'ewd_phone',
+                'ewd_mobile', 'ewd_number', 'isActive'
+            ];
+
+            $arrData = [];
+            foreach ($dataKey as $key) {
+                if ($key === 'isActive' && !isset($_GET[$key])) {
+                    $arrData[$key] = false;
+                }
+                else {
+                    if ($key === 'Shib_Identity_Provider') {
+                        $arrData['Shib-Identity-Provider'] = $_GET[$key];
+                    }
+                    else {
+                        $arrData[$key] = $_GET[$key];
+                    }
+                }
+            }
+            if ($mode === 'add') {
+                $dataList[] = $arrData;
+            }
+            else if ($mode === 'update') {
+                $id = $_GET['id'];
+
+                $dataList[$id] = $arrData;
+            }
+        }
+
+        saveData($dataList);
+        echo true;
+    }
+    else {
+        if ($dataList) {
+            foreach ($dataList as $i => $d) {
+                $dataList[$i]['Shib_Identity_Provider'] = $d['Shib-Identity-Provider'];
+                unset($dataList[$i]['Shib-Identity-Provider']);
+            }
+        }
+        echo json_encode($dataList);
+    }
 }
